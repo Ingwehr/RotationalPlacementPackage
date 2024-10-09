@@ -16,7 +16,6 @@ class Experiment:
 
         root_path = load_config()["plot_save_path"]
 
-
         self.name = f'{self.alias}-{self.a},{self.b}-{self.step_size}-{self.experiment_type}.txt'
         self.path = os.path.join(root_path,self.experiment_type, self.alias, self.name)
 

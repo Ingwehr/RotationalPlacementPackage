@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 from experiment_class import Experiment
+from load_config import load_config
+
 def plot_flower(experiment: Experiment):
     """
     Description
@@ -12,8 +14,10 @@ def plot_flower(experiment: Experiment):
         Experiment class instance with seed_data 
     """
 
+    root_path = load_config()['plot_save_path']
+
     name = f'{experiment.alias}-{experiment.a},{experiment.b}-{experiment.stepSize}-{experiment.experimentType}.svg'
-    path = f'plots/flowerPlots/{name}'
+    path = f'{root_path}/flowerPlots/{name}'
 
     fig,ax = plt.subplots()
 

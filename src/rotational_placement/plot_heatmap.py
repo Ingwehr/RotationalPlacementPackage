@@ -5,7 +5,7 @@ from experiment_class import Experiment
 from load_config import load_config
 
 
-def plotHeatmap(data:list[list[float]], experiment:Experiment):
+def plot_heatmap(data:list[list[float]], experiment:Experiment):
     
     root_path = load_config()["plot_save_path"]
 

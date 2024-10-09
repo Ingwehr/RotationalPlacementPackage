@@ -1,6 +1,6 @@
 import numpy as np
 
-def num_rp(a:int, b:int, step_size:int, max_radius:int, exp:type) -> tuple[list[np.float64,np.float64],dict[str,list[int,float]]]: 
+def num_rp(a:int, b:int, step_size:int, max_radius:int, exp) -> tuple[list[np.float64,np.float64],dict[str,list[int,float]]]: 
     """
     Description
     -----------

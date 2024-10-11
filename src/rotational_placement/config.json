@@ -1,6 +1,0 @@
-{
-    "paths": {
-        "plot_save_path": "./plots",
-        "data_files_save_path": "./data_files"
-    }
-}

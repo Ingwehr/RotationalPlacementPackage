@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rotational_placement"
-version = "0.0.3"
-description = "A package for generating and plotting rotational placement data"
+version = "0.0.8"
+description = "A package for generating data related to the concept of rotational placement"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "Academic Free License (AFL)" }

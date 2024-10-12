@@ -6,7 +6,7 @@ from .make_data_dir import make_data_dir
 from .plot_density import plot_density
 from .plot_heatmap import plot_heatmap
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __all__ = [
     "Experiment",
     "load_config",

@@ -1,10 +1,8 @@
 import matplotlib.pyplot as plt
 import os 
 import numpy as np
-from typing import TYPE_CHECKING
+from .experiment_class import Experiment
 
-if TYPE_CHECKING:
-    from experiment_class import Experiment
 
 def plot_heatmap(data:list[list[float]], experiment: Experiment):
     from load_config import load_config

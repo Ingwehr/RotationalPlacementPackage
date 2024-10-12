@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
-from typing import TYPE_CHECKING
+from experiment_class import Experiment
 
-if TYPE_CHECKING:
-    from experiment_class import Experiment
 
 def plot_flower(experiment: Experiment):
     """

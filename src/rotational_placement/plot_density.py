@@ -2,10 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from experiment_class import Experiment
+from experiment_class import Experiment
 
 def plot_density(alias_list:list[str], *experiments:Experiment) -> None:
     """

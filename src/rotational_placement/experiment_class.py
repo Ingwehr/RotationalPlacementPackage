@@ -2,7 +2,7 @@ import os
 
 class Experiment: 
     def __init__(self, alias: str, a: int, b: int, step_size: int, experiment_type: str): 
-        import rotational_placement.load_config as load_config
+        from load_config import load_config
         
         self.alias = str(alias)
         self.a = int(a)
@@ -27,8 +27,8 @@ class Experiment:
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
 
     def run_experiment(self, max_radius: int) -> None:
-        from .__rp_num__ import __rp_num__
-        from .__rp_ff__ import __rp_ff__
+        from __rp_num__ import __rp_num__
+        from __rp_ff__ import __rp_ff__
 
         match self.experiment_type: 
             case "num":

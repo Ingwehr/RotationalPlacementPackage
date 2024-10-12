@@ -1,149 +1,131 @@
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING: 
-    from experiment_class import Experiment
-
-def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment: Experiment):
+def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> tuple[dict[str, float], list[dict[str, float | int]]]:
     import numpy as np
     
-    def __distance__(point_a, point_b):
-        return np.sqrt((point_a[0] - point_b[0])**2 + (point_a[1] - point_b[1])**2)
+    def __distance(point_a, point_b):
+        return np.sqrt((point_a['x'] - point_b['x'])**2 + (point_a['y'] - point_b['y'])**2)
     
-    def __density_dict__(seed_data: list[tuple[float,float]], max_radius: int, step_size: int) -> dict[str,list[float]]:
+    def __density_dict(seed_data: list[dict[str, float]], max_radius: int, step_size: int) -> dict[str, list[float]]:
         data_dict = {'efficacy': [], 'radius': []}
-        for radius in range(2,max_radius + 1, step_size):
-            efficacy = 0
-
-            for seed in seed_data: 
-                if __distance__((0,0),seed) < radius:
-                    efficacy += 1
+        for radius in range(2, max_radius + 1, step_size):
+            efficacy = sum(1 for seed in seed_data if seed['distance'] < radius)
             data_dict['efficacy'].append(efficacy)
             data_dict['radius'].append(radius)
     
         return data_dict
 
     SEED_RADIUS = 1
-    CENTER_SEED = (np.float64(0), np.float64(0))
+    CENTER_SEED = {'x': 0, 'y': 0, 'distance': 0}
     PI = np.pi
+    ROTATION = 2 * PI * a / b
 
-    def __relevance__(seed): 
+    def __relevance(seed): 
+        def f(x): return np.tan(rotation) * x + SEED_RADIUS * 2 / np.cos(rotation)
+        def g(x): return np.tan(rotation) * x - SEED_RADIUS * 2 / np.cos(rotation)
+        def h(x): return np.tan(1 / rotation) * x
 
-        def f(x): return np.tan(ROTATION) * x + SEED_RADIUS * 2 / np.cos(ROTATION)
-        def g(x): return np.tan(ROTATION) * x - SEED_RADIUS * 2 / np.cos(ROTATION)
-        def h(x): return np.tan(1 / ROTATION) * x
+        x = seed['x']
+        y = seed['y']
 
-        x = seed[0]
-        y = seed[1]
-
-        if ROTATION == 0 and -2 < y < 2 and x > 0:
+        if rotation == 0 and -2 < y < 2 and x > 0:
             return True
-        if 0 < ROTATION < PI / 2 and g(x) < y < f(x) and h(x) < y:
+        if 0 < rotation < PI / 2 and g(x) < y < f(x) and h(x) < y:
             return True
-        if ROTATION == PI / 2 and -2 < x < 2 and y > 0:
+        if rotation == PI / 2 and -2 < x < 2 and y > 0:
             return True
-        if PI / 2 < ROTATION < PI and f(x) < y < g(x) and h(x) < y: 
+        if PI / 2 < rotation < PI and f(x) < y < g(x) and h(x) < y: 
             return True
-        if ROTATION == PI and -2 < y < 2 and x < 0:
+        if rotation == PI and -2 < y < 2 and x < 0:
             return True
-        if PI < ROTATION < 3 * PI / 2 and f(x) < y < g(x) and h(x) > y:
+        if PI < rotation < 3 * PI / 2 and f(x) < y < g(x) and h(x) > y:
             return True
-        if ROTATION == 3 * PI / 2 and -2 < x < 2 and y < 0: 
+        if rotation == 3 * PI / 2 and -2 < x < 2 and y < 0: 
             return True
-        if 3 * PI / 2 < ROTATION < 2 * PI and g(x) < y < f(x) and h(x) > y:
+        if 3 * PI / 2 < rotation < 2 * PI and g(x) < y < f(x) and h(x) > y:
             return True
         if x == 0 and y == 0: 
             return True
         return False
 
-    def __new_seed__(relevant_seeds: list[tuple[float|int, float|int]]):
-
-        def __sort__(element: tuple[float|int, float|int]):
-            return __distance__(CENTER_SEED, element) * -1
+    def __new_seed(relevant_seeds: list[dict[str, float | int]]):
+        def __sort(element: dict[str, float | int]) -> float:
+            return element['distance'] * -1
         
         proposed_seeds = []
-
-        relevant_seeds.sort(key=__sort__)
+        relevant_seeds.sort(key=__sort)
 
         for seed in relevant_seeds:
-            
-            relevant_x = seed[0]
-            relevant_y = seed[1]
+            relevant_x = seed['x']
+            relevant_y = seed['y']
 
             try: 
-                sqrt = np.sqrt((relevant_x + relevant_y * TAN)**2 - (1 + TAN**2)*(relevant_x**2 + relevant_y**2 - (2 * SEED_RADIUS)**2))
-                new_seed_x1 = (relevant_x + relevant_y * TAN + sqrt) / (1 + TAN**2)
-                new_seed_x2 = (relevant_x - relevant_y * TAN + sqrt) / (1 + TAN**2)
+                sqrt = np.sqrt((relevant_x + relevant_y * tan)**2 - (1 + tan**2)*(relevant_x**2 + relevant_y**2 - (2 * SEED_RADIUS)**2))
+                new_seed_x1 = (relevant_x + relevant_y * tan + sqrt) / (1 + tan**2)
+                new_seed_x2 = (relevant_x - relevant_y * tan + sqrt) / (1 + tan**2)
             except(ZeroDivisionError):
-                new_seed_x1 = (relevant_x + relevant_y * TAN) / (1 + TAN**2)
+                new_seed_x1 = (relevant_x + relevant_y * tan) / (1 + tan**2)
                 new_seed_x2 = new_seed_x1
 
-            proposed_seeds.append(__true_seed__(new_seed_x1,new_seed_x2))
+            proposed_seeds.append(__true_seed(new_seed_x1, new_seed_x2))
 
-        proposed_seeds.sort(key=__sort__)
-        
-        return proposed_seeds[0]
+        return max(proposed_seeds, key=lambda seed: seed["distance"])
     
-    def __true_seed__(new_seed_x1, new_seed_x2):
-        seed_1 = (new_seed_x1, TAN * new_seed_x1)
-        seed_2 = (new_seed_x2, TAN * new_seed_x2)
+    def __true_seed(new_seed_x1, new_seed_x2):
+        seed_1 = {'x': new_seed_x1, 'y': tan * new_seed_x1, 'distance': __distance({'x': new_seed_x1, 'y': tan * new_seed_x1}, CENTER_SEED)}
+        seed_2 = {'x': new_seed_x2, 'y': tan * new_seed_x2, 'distance': __distance({'x': new_seed_x2, 'y': tan * new_seed_x2}, CENTER_SEED)}
 
-        if __distance__(seed_1,CENTER_SEED) > __distance__(seed_2): 
+        if seed_1['distance'] > seed_2['distance']: 
+            del seed_2
             return seed_1
-        if __distance__(seed_2,CENTER_SEED) > __distance__(seed_1): 
+        if seed_2['distance'] > seed_1['distance']: 
+            del seed_1
             return seed_2
         
-        if __near_center__(seed_1):
+        if __near_center(seed_1):
+            del seed_2
             return seed_1
         else:
+            del seed_1
             return seed_2
         
-    def __near_center__(seed): 
-        def h(x): return (-1 / TAN) * x
+    def __near_center(seed): 
+        def h(x): return (-1 / tan) * x
 
-        seed_x = seed[0]
-        seed_y = seed[1]
+        seed_x = seed['x']
+        seed_y = seed['y']
 
-        if ROTATION == 0 and seed_x > 0:
+        if rotation == 0 and seed_x > 0:
             return True
-        if ROTATION == PI / 2 and seed_y > 0: 
+        if rotation == PI / 2 and seed_y > 0: 
             return True
-        if ROTATION == PI and seed_x < 0: 
+        if rotation == PI and seed_x < 0: 
             return True
-        if ROTATION == 3 * PI / 2 and seed_y < 0: 
+        if rotation == 3 * PI / 2 and seed_y < 0: 
             return True
-        if 0 < ROTATION < PI and h(seed_x) < seed_y: 
+        if 0 < rotation < PI and h(seed_x) < seed_y: 
             return True
-        if PI < ROTATION < 2 * PI and h(seed_x) > seed_y:
+        if PI < rotation < 2 * PI and h(seed_x) > seed_y:
             return True
         return False
-
 
     #-----------------main loop-----------------
     seed_data = experiment.get_seed_data()
     if len(seed_data) != 0: 
+        seed_data = [{'x': s[0], 'y': s[1], 'distance': __distance({'x': s[0], 'y': s[1]}, CENTER_SEED)} for s in seed_data]
         c = len(seed_data)
     else: 
         seed_data = [CENTER_SEED]
         c = 1
     
-    while __distance__(seed_data[-1], CENTER_SEED) < max_radius and c < max_radius**2: 
-        
-        ROTATION = 2 * PI * (((c * a) % b) / b)
-        
-        TAN = np.tan(ROTATION)
+    while seed_data[-1]['distance'] < max_radius and c < max_radius**2: 
+        rotation = (ROTATION * c) % (2 * PI)
+        tan = np.tan(rotation)
 
-        relevant_seeds = []
-
-        for seed in seed_data:
-            if __relevance__(seed): 
-                relevant_seeds.append(seed)
-        
-        seed_data.append(__new_seed__(relevant_seeds))
+        relevant_seeds = [seed for seed in seed_data if __relevance(seed)]
+        new_seed = __new_seed(relevant_seeds)
+        new_seed['distance'] = __distance(new_seed, CENTER_SEED)
+        seed_data.append(new_seed)
 
         c += 1
 
-    density_dict = __density_dict__(seed_data, max_radius, step_size)
-
-    return(density_dict,seed_data)
-
-    
+    density_dict = __density_dict(seed_data, max_radius, step_size)
+    return density_dict, seed_data

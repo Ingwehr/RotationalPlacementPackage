@@ -71,6 +71,7 @@ class Experiment:
         try: 
             return int(self.density_data["radius"][-1])
         except IndexError:
+            print("seed_data is empty")
             return None
     
     def get_density(self): 

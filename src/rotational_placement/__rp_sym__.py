@@ -1,24 +1,24 @@
-def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> tuple[dict[str, float], list[dict[str, float | int]]]:
-    import numpy as np
-    
+def __rp_sym__(a: int, b: int, step_size: int, max_radius: int, experiment) -> tuple[dict[str, float], list[dict[str, float | int]]]:
+    import sympy as sp
+
     def __distance(point_a, point_b):
-        return np.sqrt((point_a['x'] - point_b['x'])**2 + (point_a['y'] - point_b['y'])**2)
-    
+        # Distance using sympy sqrt for symbolic precision
+        return sp.sqrt((point_a['x'] - point_b['x'])**2 + (point_a['y'] - point_b['y'])**2)
+
     def __density_dict(seed_data: list[dict[str, float]], max_radius: int, step_size: int) -> dict[str, list[float]]:
         data_dict = {'efficacy': [], 'radius': []}
         for radius in range(2, max_radius + 1, step_size):
             efficacy = sum(1 for seed in seed_data if seed['distance'] < radius)
             data_dict['efficacy'].append(efficacy)
             data_dict['radius'].append(radius)
-    
         return data_dict
 
     SEED_RADIUS = 1
     CENTER_SEED = {'x': 0, 'y': 0, 'distance': 0}
-    PI = np.pi
+    PI = sp.pi
 
     def __relevance(seed: dict[str,float|int]): 
-
+        # SymPy handles both symbolic and numeric cases with precision
         x = seed['x']
         y = seed['y']
 
@@ -57,19 +57,21 @@ def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> t
             relevant_x = seed['x']
             relevant_y = seed['y']
 
+            # Symbolic math via SymPy to compute new seed coordinates
             try: 
-                sqrt = np.sqrt((relevant_x + relevant_y * TAN)**2 - (1 + TAN**2)*(relevant_x**2 + relevant_y**2 - (2 * SEED_RADIUS)**2))
+                sqrt = sp.sqrt((relevant_x + relevant_y * TAN)**2 - (1 + TAN**2)*(relevant_x**2 + relevant_y**2 - (2 * SEED_RADIUS)**2))
                 new_seed_x1 = (relevant_x + relevant_y * TAN + sqrt) / (1 + TAN**2)
                 new_seed_x2 = (relevant_x - relevant_y * TAN + sqrt) / (1 + TAN**2)
-            except(ZeroDivisionError):
+            except ZeroDivisionError:
                 new_seed_x1 = (relevant_x + relevant_y * TAN) / (1 + TAN**2)
                 new_seed_x2 = new_seed_x1
 
             proposed_seeds.append(__true_seed(new_seed_x1, new_seed_x2))
 
         return max(proposed_seeds, key=lambda seed: seed["distance"])
-    
-    def __true_seed(new_seed_x1:float|int, new_seed_x2:float|int):
+
+    def __true_seed(new_seed_x1, new_seed_x2):
+        # SymPy expressions for symbolic precision
         seed_1 = {'x': new_seed_x1, 'y': TAN * new_seed_x1, 'distance': __distance({'x': new_seed_x1, 'y': TAN * new_seed_x1}, CENTER_SEED)}
         seed_2 = {'x': new_seed_x2, 'y': TAN * new_seed_x2, 'distance': __distance({'x': new_seed_x2, 'y': TAN * new_seed_x2}, CENTER_SEED)}
 
@@ -82,9 +84,8 @@ def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> t
         else:
             return seed_2
 
-    def __near_center(seed:dict[str,float|int]): 
+    def __near_center(seed): 
         hx = INV_TAN * seed['x']
-
         seed_x = seed['x']
         seed_y = seed['y']
 
@@ -112,14 +113,15 @@ def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> t
         c = 1
 
     while seed_data[-1]['distance'] < max_radius and c < max_radius**2: 
+        # SymPy trigonometric functions for symbolic precision
+        ROTATION = 2 * PI * (((c * a) % b) / b)
+        TAN = sp.tan(ROTATION)
+        COS = sp.cos(ROTATION)
+        INV_TAN = sp.tan(-1 / ROTATION)
 
-        ROTATION = 2 * np.pi * (((c * a) % b) / b)
-        TAN = np.tan(ROTATION)
-        COS = np.cos(ROTATION)
-        INV_TAN = np.tan(-1 / ROTATION)
-
-        relevant_seeds = [seed for seed in seed_data if __relevance(seed)]
-        new_seed = __new_seed(relevant_seeds)
+        # Calculate relevant seeds and new seed symbolically
+        relevant_seeds = [seed for seed in seed_data if __relevance(seed, TAN, COS, INV_TAN, ROTATION)]
+        new_seed = __new_seed(relevant_seeds, TAN)
         new_seed['distance'] = __distance(new_seed, CENTER_SEED)
         seed_data.append(new_seed)
 

@@ -64,7 +64,7 @@ class Experiment:
                 'a': self.a,
                 'b': self.b,
                 'experimentType': self.experiment_type,
-                'stepSize': self.step_size,
+                'step_size': self.step_size,
                 'max_radius': self.get_max_radius()}
 
     def get_max_radius(self): 
@@ -77,35 +77,7 @@ class Experiment:
         return [float(e) / (float(r) ** 2) for e, r in zip(self.density_data['efficacy'], self.density_data['radius'])]
 
     def get_seed_data(self): 
-        import numpy as np
-        import re
-        seed_data = []
-        
-        # Pattern to match np.float64(x) and np.float64(y) with support for scientific notation
-        np_float64_pattern = re.compile(r"np\.float64\((-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\)")
-        
-        # Pattern to match plain (x, y) pairs with support for scientific notation
-        plain_tuple_pattern = re.compile(r"\((-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?),\s*(-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\)")
-        
-        for seed in self.seed_data:
-            # First try to match the np.float64() pattern
-            np_float_matches = np_float64_pattern.findall(seed)
-            
-            if len(np_float_matches) == 2:
-                # np.float64(x), np.float64(y) case
-                x, y = np.float64(np_float_matches[0]), np.float64(np_float_matches[1])
-                seed_data.append((x, y))
-            
-            else:
-                # Try to match the plain (x, y) tuple pattern
-                plain_match = plain_tuple_pattern.match(seed)
-                if plain_match:
-                    x, y = np.float64(plain_match.group(1)), np.float64(plain_match.group(2))
-                    seed_data.append((x, y))
-                else:
-                    print(f"...Warning: Seed data '{seed}' is malformed and was skipped....")
-        
-        return seed_data
+        return self.seed_data
         
     def get_radius(self):
         return self.density_data["radius"]

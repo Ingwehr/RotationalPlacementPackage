@@ -13,5 +13,6 @@ __all__ = [
     "make_plot_dir",
     "make_data_dir",
     "plot_density",
-    "plot_heatmap"
+    "plot_heatmap",
+    "plot_flower",
 ]

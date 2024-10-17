@@ -22,8 +22,8 @@ def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> t
         x = seed['x']
         y = seed['y']
 
-        fx = TAN * x + SEED_RADIUS * 2 / COS
-        gx = TAN * x - SEED_RADIUS * 2 / COS
+        fx = TAN * x + SEED_RADIUS * 2 * SEED_RADIUS / COS
+        gx = TAN * x - SEED_RADIUS * 2 * SEED_RADIUS / COS
         hx = INV_TAN * x
 
         if ROTATION == 0 and -2 < y < 2 and x > 0:
@@ -106,14 +106,13 @@ def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> t
     seed_data = experiment.get_seed_data()
     if len(seed_data) != 0: 
         seed_data = [{'x': s[0], 'y': s[1], 'distance': __distance({'x': s[0], 'y': s[1]}, CENTER_SEED)} for s in seed_data]
-        c = len(seed_data)
     else: 
         seed_data = [CENTER_SEED]
-        c = 1
+        
 
-    while seed_data[-1]['distance'] < max_radius and c < max_radius**2: 
+    while seed_data[-1]['distance'] < max_radius and len(seed_data) < max_radius**2: 
 
-        ROTATION = 2 * np.pi * (((c * a) % b) / b)
+        ROTATION = 2 * np.pi * (((len(seed_data) * a) % b) / b)
         TAN = np.tan(ROTATION)
         COS = np.cos(ROTATION)
         INV_TAN = np.tan(-1 / ROTATION)
@@ -122,8 +121,6 @@ def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> t
         new_seed = __new_seed(relevant_seeds)
         new_seed['distance'] = __distance(new_seed, CENTER_SEED)
         seed_data.append(new_seed)
-
-        c += 1
 
     density_dict = __density_dict(seed_data, max_radius, step_size)
     

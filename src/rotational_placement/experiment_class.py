@@ -2,7 +2,7 @@ import os
 
 class Experiment: 
     def __init__(self, alias: str, a: int, b: int, step_size: int, experiment_type: str): 
-        from load_config import load_config
+        from .load_config import load_config
         
         self.alias = str(alias)
         self.a = int(a)
@@ -25,23 +25,25 @@ class Experiment:
 
         # Ensure directories exist
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
-
+    
     def run_experiment(self, max_radius: int) -> None:
-        from __rp_num__ import __rp_num__
-        from __rp_ff__ import __rp_ff__
+        from .__rp_num__ import __rp_num__
+        from .__rp_ff__ import __rp_ff__
+        #from .__rp_sym__ import __rp_sym__
 
         match self.experiment_type: 
             case "num":
                 self.density_data, self.seed_data = __rp_num__(self.a, self.b, self.step_size, max_radius, self)
             case "ff":
                 self.density_data = __rp_ff__(self.a, self.b, self.step_size, max_radius, self)
-            case "sym": 
-                pass
+            case "sym":
+                pass 
+                #self.density_data, self.seed_data = __rp_sym__(self.a, self.b, self.step_size, max_radius, self)
             case _:
                 raise ValueError("invalid experiment type")
         print("Experiment done and added to instance")
 
-    def write_to_self(self) -> None:
+    def write_to_file(self) -> None:
         with open(self.path, "w") as file:
             file.write(f"alias:{self.alias}\n")
             file.write(f"a:{self.a}\n")
@@ -59,7 +61,7 @@ class Experiment:
         
         print("Data written to file")
 
-    def get_meta_data(self):
+    def get_meta_data(self) -> dict[str,int|str]:
         return {'alias': self.alias,
                 'a': self.a,
                 'b': self.b,
@@ -67,30 +69,27 @@ class Experiment:
                 'step_size': self.step_size,
                 'max_radius': self.get_max_radius()}
 
-    def get_max_radius(self): 
+    def get_max_radius(self) -> int: 
         try: 
             return int(self.density_data["radius"][-1])
         except IndexError:
             print("seed_data is empty")
             return None
     
-    def get_density(self): 
+    def get_density(self) -> list[float]: 
         return [float(e) / (float(r) ** 2) for e, r in zip(self.density_data['efficacy'], self.density_data['radius'])]
 
-    def get_seed_data(self): 
+    def get_seed_data(self) -> list[dict[str,float|int]]: 
         return self.seed_data
         
-    def get_radius(self):
+    def get_radius(self) -> list[int]:
         return self.density_data["radius"]
 
-    def get_efficacy(self):
+    def get_efficacy(self) -> list[int]:
         return self.density_data["efficacy"]
         
     @staticmethod
     def read_from_file(alias: str, a: int, b: int, step_size: int, experiment_type: str):
-        '''
-        Reads the specified experiment from a file and returns an Experiment instance.
-        '''
         import rotational_placement.load_config as load_config
         
         # Load configuration for the path

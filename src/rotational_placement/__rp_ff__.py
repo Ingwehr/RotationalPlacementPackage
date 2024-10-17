@@ -54,7 +54,7 @@ def __rp_ff__(a: int, b: int, step_size: int, max_radius: int, experiment) -> di
     else: 
         while segments[-1]["segments_radius"] < RADIUS_EVENT_HORIZON:
             segments.append(__add_segment(a,b,segments))
-
+            
         segment = {
             "number_of_arcs":b,
             "arc_angle":0,
@@ -81,5 +81,5 @@ def __rp_ff__(a: int, b: int, step_size: int, max_radius: int, experiment) -> di
         
         data_dict["radius"].append(current_radius)
         data_dict["efficacy"].append(efficacy)
-    return data_dict
 
+    return data_dict

@@ -1,4 +1,4 @@
-def __rp_ff__(a: int, b: int, step_size: int, max_radius: int, experiment) -> dict[str,float]:
+def _rp_ff(a: int, b: int, step_size: int, max_radius: int, experiment) -> dict[str,float]:
     import numpy as np
 
     PI = np.pi
@@ -46,6 +46,8 @@ def __rp_ff__(a: int, b: int, step_size: int, max_radius: int, experiment) -> di
 
         return truncated_seeds
 
+
+    #create segments up until max_radius
     segments = [{"segment_radius":2, "segment_efficacy": 1}]
 
     if max_radius < RADIUS_EVENT_HORIZON: 
@@ -66,9 +68,10 @@ def __rp_ff__(a: int, b: int, step_size: int, max_radius: int, experiment) -> di
         
         segments.append(segment)
 
+    #collect data and return it
     data_dict = {"radius":[],"efficacy":[]}
 
-    for current_radius in (2,max_radius,step_size):
+    for current_radius in (2, max_radius, step_size):
 
         for i, segment in enumerate(segments):
 

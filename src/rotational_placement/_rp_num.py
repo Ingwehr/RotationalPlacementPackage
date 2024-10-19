@@ -1,4 +1,4 @@
-def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> tuple[dict[str, float], list[dict[str, float | int]]]:
+def _rp_num(a: int, b: int, step_size: int, max_radius: int, experiment) -> tuple[dict[str, float], list[dict[str, float | int]]]:
     import numpy as np
     
     def __distance(point_a, point_b):
@@ -107,8 +107,7 @@ def __rp_num__(a: int, b: int, step_size: int, max_radius: int, experiment) -> t
     if len(seed_data) != 0: 
         seed_data = [{'x': s[0], 'y': s[1], 'distance': __distance({'x': s[0], 'y': s[1]}, CENTER_SEED)} for s in seed_data]
     else: 
-        seed_data = [CENTER_SEED]
-        
+        seed_data = [CENTER_SEED] 
 
     while seed_data[-1]['distance'] < max_radius and len(seed_data) < max_radius**2: 
 

@@ -27,15 +27,15 @@ class Experiment:
         os.makedirs(os.path.dirname(self.path), exist_ok=True)
     
     def run_experiment(self, max_radius: int) -> None:
-        from .__rp_num__ import __rp_num__
-        from .__rp_ff__ import __rp_ff__
+        from ._rp_num import _rp_num
+        from ._rp_ff import _rp_ff
         #from .__rp_sym__ import __rp_sym__
 
         match self.experiment_type: 
             case "num":
-                self.density_data, self.seed_data = __rp_num__(self.a, self.b, self.step_size, max_radius, self)
+                self.density_data, self.seed_data = _rp_num(self.a, self.b, self.step_size, max_radius, self)
             case "ff":
-                self.density_data = __rp_ff__(self.a, self.b, self.step_size, max_radius, self)
+                self.density_data = _rp_ff(self.a, self.b, self.step_size, max_radius, self)
             case "sym":
                 pass 
                 #self.density_data, self.seed_data = __rp_sym__(self.a, self.b, self.step_size, max_radius, self)

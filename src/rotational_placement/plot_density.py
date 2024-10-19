@@ -1,6 +1,6 @@
 from .experiment_class import Experiment
 
-def plotDensity(aliass:list[str], *experiments: Experiment):
+def plot_density(aliass:list[str], *experiments: Experiment):
     """
     DESCRIPTION
     -----------

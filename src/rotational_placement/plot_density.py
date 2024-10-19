@@ -64,4 +64,4 @@ def plot_density(aliass:list[str], *experiments: Experiment):
     
 
     plt.savefig(path)
-    print(f"...plot saved to {path}...")
+    print(f"plot saved at {path}")

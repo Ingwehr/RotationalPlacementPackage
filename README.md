@@ -43,3 +43,5 @@ They save the plots at the location specified in config.json.
 
 `plot_density(alias_list=['num','sym','ff'],*experiments=ff_exp,num_exp,sym_exp)`
 
+`plot_flower(experiment, max_radius=0)`
+

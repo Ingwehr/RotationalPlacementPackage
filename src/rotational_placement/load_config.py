@@ -2,7 +2,7 @@ import os
 import json
 import importlib.resources as pkg_resources
 
-def load_config():
+def _load_config():
     # Check for the development config file first
     dev_path = os.path.join(os.path.dirname(__file__), 'config.json')
     

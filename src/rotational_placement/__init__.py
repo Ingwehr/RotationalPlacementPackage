@@ -7,7 +7,7 @@ from .plot_density import plot_density
 from .plot_flower import plot_flower
 
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 __all__ = [
     "Experiment",
     "load_config",

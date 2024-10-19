@@ -15,7 +15,7 @@ def plot_density(aliass:list[str], *experiments: Experiment):
         
     RETURNS 
     -------
-    None
+    The function saves the plot at specified location (default is ./plots/density_plots/)
     """
 
     import matplotlib.pyplot as plt

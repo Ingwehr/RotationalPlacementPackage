@@ -7,8 +7,8 @@ class Experiment:
         self.alias = str(alias)
         self.a = int(a)
         self.b = int(b)
-        self.step_size = step_size
-        self.experiment_type = experiment_type
+        self.step_size = int(step_size)
+        self.experiment_type = str(experiment_type)
 
         # Load configuration
         config = load_config()

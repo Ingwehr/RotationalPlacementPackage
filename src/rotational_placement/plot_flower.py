@@ -20,8 +20,8 @@ def plot_flower(experiment: Experiment, max_radius=0):
     if max_radius == 0: 
         max_radius = experiment.get_max_radius()
     
-    from .load_config import load_config
-    root_path = load_config().get("plot_save_path","plots")
+    from .load_config import _load_config
+    root_path = _load_config().get("plot_save_path","plots")
 
     name = f"flower-{experiment.get_meta_data['alias']}-{max_radius}.png"
     path = f'{root_path}/flower_plots/{name}'

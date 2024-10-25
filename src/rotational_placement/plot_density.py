@@ -25,9 +25,13 @@ def plot_density(aliass:list[str], *experiments: Experiment):
     # Find the maximum common radius across all experiments
     max_common_radius = min([max(exp.getRadius()) for exp in experiments])
 
+    from .load_config import _load_config
+    root_path = _load_config().get("plot_save_path","plots")
+
+
     # Construct the name for saving the plot
     name = 'density-' + '-'.join([exp.getMetaData()['alias'] for exp in experiments]) + '.svg'
-    path = f'plots/densityPlots/{name}'
+    path = f'{root_path}/densityPlots/{name}'
 
     # Ensure the directory exists
     os.makedirs(os.path.dirname(path), exist_ok=True)

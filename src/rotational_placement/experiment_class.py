@@ -2,7 +2,7 @@ import os
 
 class Experiment: 
     def __init__(self, alias: str, a: int, b: int, step_size: int, experiment_type: str): 
-        from .load_config import load_config
+        from .load_config import _load_config
         
         self.alias = str(alias)
         self.a = int(a)
@@ -11,7 +11,7 @@ class Experiment:
         self.experiment_type = str(experiment_type)
 
         # Load configuration
-        config = load_config()
+        config = _load_config()
         root_path = config.get("data_files_path", "data_files")  # Default to "data_files" if not set in config
 
         # Define name and path for saving results
@@ -90,10 +90,10 @@ class Experiment:
         
     @staticmethod
     def read_from_file(alias: str, a: int, b: int, step_size: int, experiment_type: str):
-        import rotational_placement.load_config as load_config
+        from .load_config import _load_config
         
         # Load configuration for the path
-        config = load_config()
+        config = _load_config()
         root_path = config.get("data_files_path", "data_files")  # Default to "data_files" if not set in config
 
         # Create the file name and path

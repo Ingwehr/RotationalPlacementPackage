@@ -22,8 +22,8 @@ def _rp_num(a: int, b: int, step_size: int, max_radius: int, experiment) -> tupl
         x = seed['x']
         y = seed['y']
 
-        fx = TAN * x + SEED_RADIUS * 2 * SEED_RADIUS / COS
-        gx = TAN * x - SEED_RADIUS * 2 * SEED_RADIUS / COS
+        fx = TAN * x + 2 * SEED_RADIUS / COS
+        gx = TAN * x - 2 * SEED_RADIUS / COS
         hx = INV_TAN * x
 
         if ROTATION == 0 and -2 < y < 2 and x > 0:
@@ -114,7 +114,7 @@ def _rp_num(a: int, b: int, step_size: int, max_radius: int, experiment) -> tupl
         ROTATION = 2 * np.pi * (((len(seed_data) * a) % b) / b)
         TAN = np.tan(ROTATION)
         COS = np.cos(ROTATION)
-        INV_TAN = np.tan(-1 / ROTATION)
+        INV_TAN = -1 / np.tan(ROTATION)
 
         relevant_seeds = [seed for seed in seed_data if __relevance(seed)]
         new_seed = __new_seed(relevant_seeds)
